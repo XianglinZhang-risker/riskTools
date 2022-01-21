@@ -112,3 +112,34 @@ riskForm(
  , ord = 'asc'
 )
 
+##  所有函数介绍
+binningsBestKS：BestKs最优分箱(数据越离散效果越好，与卡方分箱不相上下)
+binningsCartReg：cart回归树最优分箱
+binningsChimerge：卡方最优分箱(大多数情况下表现最好，但是数据量很大的时候建议用一个变量测试一下时间)
+binningsCluster：聚类最优分箱
+binningsTraverse:遍历分箱，适用于特定场景，变量变量所有值
+binningsEqual：等频分箱
+binningsWidth：等距分箱
+binsBestKS：BestKs最优分箱-只输出分割点
+binsCartReg：cart回归树最优分箱-只输出分割点
+binsCluster：聚类最优分箱-只输出分割点
+binsEqual：等频分箱-只输出分割点
+binsWidth：等距分箱-只输出分割点
+describeData：快速的描述性统计
+modelEffect：输出模型效果
+modelScore：转换逻辑回归预测概率为得分
+riskForm：分箱输出结果效果
+scoreCard：输出入模变量及其得分
+splitDt：切分数据集，可选训练测试或K折交叉
+transformResponse：帮助转换Y标签
+woePlot：分箱可视化-echarts4r
+woePlotGG：分箱可视化-ggplot2
+woeTrans:原始数据转换为woe
+
+
+
+
+
+
+
+
