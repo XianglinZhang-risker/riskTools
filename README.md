@@ -50,17 +50,6 @@ fitStepAic <- step(
 
 summary(fitStepAic)
 
-# ## stepwise by bic
-#
-# fitStepBic <- step(
-#   fit
-#   , direction = 'both'
-#   , k = log(nrow(woeDataList$train)))
-#   , trace = FALSE
-# )
-#
-# summary(fitStepBic)
-
 ## pred
 
 predList <- lapply(woeDataList, function(x) predict(fitStepAic, x, type='response'))
