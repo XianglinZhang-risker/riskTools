@@ -1,12 +1,39 @@
 # riskTools
 
+##  自述文件
+
+### 纯R语言风控模型包，整体风格受谢博士scorecard启发(https://github.com/ShichenXie/scorecard)
+### 支持的最优分箱方法：卡方最优分箱、cart决策树最优分箱、BestKs最优分箱
+### 其他分箱方法：聚类分箱、等频分箱、等距分箱、遍历分箱
+### 效果上目前测试不亚于市面上任何包，且支持输出单调趋势、自动调整为单调或正U倒U、自动调整单调
+![image](https://user-images.githubusercontent.com/51108054/150460096-49021e73-adaf-4c09-b54a-1f79bb58c2f9.png)
+![image](https://user-images.githubusercontent.com/51108054/150460160-d0705a9d-f8ed-4adb-a68c-55bcb995327f.png)
+![image](https://user-images.githubusercontent.com/51108054/150460214-42643b5d-65a6-4b7f-8f22-b1a6740d237b.png)
+### 已知限制：卡方最优分箱在数据离度精确到小数位16位之后会报错，卡方分箱和决策树分箱在数据量达到一定量级的时候分箱效率较低 
+### 项目未来计划：
+#### 1. 将脚本改写成Julia语言，并未R和Python提供接口
+#### 2. 将不仅限于分箱、模型，将来会加入一些贷后指标的计算函数
+#### 3. 效率将作为主要优化点，Julia语言应该会比现在纯R语言实现效率上快很多
+#### 4. 之所以没有直接上传源代码是因为代码还在改进过程中，目前比较糟乱，欢迎大家提出使用问题，我将不遗余力的改进
+
+##
+
+## downloan
+
+### 1. 下载riskTools.zip，解压后放到R包环境下，如果您找不到的话可以在R中输入.libPaths()即可
+
+##
+## example 1
+
+### load data
+
 library(data.table)
 
 data("germancredit", package="scorecard")
 
 data <- germancredit
 
-##  Convert Y labels
+###  Convert Y labels
 
 data <- transformResponse(data,y = 'creditability')
 
@@ -14,7 +41,7 @@ dataList <- splitDt(data = data,ratio = c(0.7,0.3),seed = 520)
 
 labelList <- lapply(dataList, function(x) x$y)
 
-##  bins
+###  bins
 
 binsChi <- binningsChimerge(
   data = data
@@ -23,13 +50,13 @@ binsChi <- binningsChimerge(
 
 binsChiDt <- rbindlist(binsChi)
 
-## woe
+### woe
 
 woeData <- woeTrans(data,y = 'y',bins = binsChi)
 
 woeDataList <- lapply(dataList,function(x) woeTrans(x,y = 'y',bins = binsChi))
 
-## glm
+### glm
 
 fit = glm(
   y ~ .
@@ -39,7 +66,7 @@ fit = glm(
 
 summary(fit)
 
-## stepwise by aic
+### stepwise by aic
 
 fitStepAic <- step(
   fit
@@ -50,11 +77,11 @@ fitStepAic <- step(
 
 summary(fitStepAic)
 
-## pred
+### pred
 
 predList <- lapply(woeDataList, function(x) predict(fitStepAic, x, type='response'))
 
-## performance
+### performance
 
 modelPerformance <- modelEffect(
   pred = predList
@@ -64,13 +91,13 @@ modelPerformance <- modelEffect(
 
 modelPerformance
 
-##  score and scorecard
+###  score and scorecard
 
-### Only output the final model score
+#### Only output the final model score
 
 modelScoreRes <- lapply(predList, function(x) modelScore(x))
 
-### scorecard
+#### scorecard
 
 sc <- scoreCard(
   bins = binsChi
